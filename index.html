@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body{
+            background-image:linear-gradient(to right,blue, purple);
+        }
+        .container{
+            border: 2px solid black;
+            border-radius: 9px;
+            width: 60vw;
+            overflow: auto;
+            margin: auto;
+            height: 500px;
+            margin-top: 2%;
+            box-shadow: 2px 3px 3px black;
+        }
+        .left{
+            float: left;
+            clear: both;
+            margin-right: 4%;
+            margin-left: 4%;
+        }
+        .right{
+            float: right;
+            clear: both;
+            margin-left: 4%;
+            margin-right: 4%;
+        }
+        p{
+           padding: 2%;
+          /* word-break: break-all; */
+           margin-bottom: -2%;
+           background-color: antiquewhite;
+           border:2px solid black;
+           border-radius: 7px;
+        }
+        .messageportion{
+            margin-left: 20%;
+            display: inline;
+        }
+        .btn{
+            height: 35px;
+
+            border: 2px solid black;
+            border-radius: 9px;
+        }
+        .text{
+            border: 2px solid black;
+            border-radius: 9px;
+            width: 53vw;
+            height: 29px;
+            font-size: 19px;
+            margin-top: 1%;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket=io();
+        $(document).ready(()=>{
+            name=prompt("enter your name: ")
+           socket.emit('sendname',name);
+            socket.on('resname',(data)=>{
+                $('.container').append(`<div class="left"><p>${data}</p></div>`);
+            })
+            socket.on('userview',(data)=>{
+                $('.container').append(`<div class="right"><p>${data}</p></div>`);
+            })
+            $('.btn').click((e)=>{
+              e.preventDefault();
+                var data=$('.text').val();
+                socket.emit('sentmessage',data);
+                 $('.text').val("");
+            })
+            $('body').keypress((e)=>{
+              if(e.key=="Enter"){
+                e.preventDefault();
+                var data=$('.text').val();
+                socket.emit('sentmessage',data);
+                 $('.text').val("");
+            }
+           })
+        })
+    </script>
+</head>
+<body>
+    <div class="container">
+        
+        
+    </div>
+    <div class="messageportion">
+        <input type="text" class="text">
+        <button class="btn">send</button>
+    </div>
+    
+</body>
+</html>
